@@ -25,13 +25,19 @@ char *getstr()
 int main()
 {
     char *s1, *s2, *d;
+    size_t i, j;
 
     puts("Enter two strings:");
     if(!(s1 = getstr())) goto alocerr;
     if(!(s2 = getstr())) goto alocerr;
 
     if(!(d = malloc(strlen(s1) + strlen(s2) + 1))) goto alocerr;
-    printf("Concatenated string is \"%s\".", strcat(strcpy(d, s1), s2));
+
+    i = j = 0;
+    while((d[i] = s1[i])) ++i;
+    while((d[i++] = s2[j++]));
+
+    printf("Concatenated string is \"%s\".", d);
 
     free(s1);
     free(s2);
