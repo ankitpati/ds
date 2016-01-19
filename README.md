@@ -1,6 +1,6 @@
 # DS Code Dump
 
-This is a repository containing code dumps of the Data Structures (FDS) coursework for B. Tech. (IT) Second Year at the Symbiosis Institute of Technology, Pune.
+This is a repository containing code dumps of the Data Structures (DS) coursework for B. Tech. (IT) Second Year at the Symbiosis Institute of Technology, Pune.
 
 ## Directories
 The dump is organised into 3 directories.
