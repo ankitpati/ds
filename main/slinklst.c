@@ -6,23 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef enum{
-    ALOCERR
-} errcode;
-
-void error(errcode e)
-{
-    switch(e){
-    case ALOCERR:
-        fprintf(stderr, "Allocation Error!\n");
-        break;
-    default:
-        fprintf(stderr, "Unknown Error!\n");
-        break;
-    }
-    exit(e);
-}
-
 typedef int data;
 
 typedef struct Node{
@@ -43,18 +26,18 @@ void traverse()
 void insert(size_t pos, data d)
 {
     size_t i;
-    node tmp, prev, newnode;
+    node prev, newnode;
 
     if(!first){
         first = malloc(sizeof(*first));
-        if(!first) error(ALOCERR);
+        if(!first) exit(12);
         first->d = d;
         first->next = NULL;
         return;
     }
 
     newnode = malloc(sizeof(*newnode));
-    if(!newnode) error(ALOCERR);
+    if(!newnode) exit(12);
     newnode->d = d;
 
     if(!pos){
@@ -63,11 +46,9 @@ void insert(size_t pos, data d)
         return;
     }
 
-    for(
-        i = 0, prev = first, tmp = first->next;
-        i < pos && tmp;
-        ++i, prev = tmp, tmp = tmp->next
-    );
+    --pos;
+
+    for(i = 0, prev = first; i < pos && prev->next; ++i, prev = prev->next);
 
     newnode->next = prev->next;
     prev->next = newnode;
@@ -149,7 +130,7 @@ int main()
                     scanf(" %zu%*c", &pos);
                     puts("Data?");
                     scanf(" %d%*c", &d);
-                    insert(0, d);
+                    insert(pos, d);
                     break;
                 case 3:
                     puts("Data?");
@@ -208,3 +189,57 @@ int main()
     return 0;
 }
 /* end of slinklst.c */
+
+/* OUTPUT
+
+What would you like to do?
+ ( 0) Exit
+ ( 1) Insert
+ ( 2) Delete
+ ( 3) Traverse
+
+    1
+    Insert where?
+     ( 0) Back to previous menu
+     ( 1) Beginning
+     ( 2) Middle
+     ( 3) End
+
+    1
+    Data?
+    43
+
+    3
+    Data?
+    50
+
+    2
+    Position?
+    1
+    Data?
+    86
+
+    0
+
+3
+43 86 50
+
+    2
+    Delete from where?
+     ( 0) Back to previous menu
+     ( 1) Beginning
+     ( 2) Middle
+     ( 3) End
+
+    3
+    50
+
+    0
+
+3
+43 86
+
+0
+Bye!
+
+*/
