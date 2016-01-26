@@ -31,3 +31,23 @@ int main()
     return 0;
 }
 /* end of dynalloc.c */
+
+/* OUTPUT
+
+How many numbers?
+5
+Which allocation routine?
+(0) malloc
+(1) calloc
+
+0
+Enter 5 numbers:
+43 50 62 12 54
+Sum is 221.000000.
+
+1
+Enter 5 numbers:
+78 86 95 12 43
+Sum is 314.000000.
+
+*/

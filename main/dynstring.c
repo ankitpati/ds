@@ -6,23 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef enum{
-    ALOCERR
-} errcode;
-
-void error(errcode e)
-{
-    switch(e){
-    case ALOCERR:
-        fprintf(stderr, "Allocation Error!\n");
-        break;
-    default:
-        fprintf(stderr, "Unknown Error!\n");
-        break;
-    }
-    exit(e);
-}
-
 char *getstr()
 {
     int c;
@@ -42,12 +25,11 @@ char *sconcat(char *str1, char *str2)
 {
     char *str;
     size_t len1, len2, i;
-
     len1 = len2 = i = 0;
 
     while(str1[len1]) ++len1;
     while(str2[len2]) ++len2;
-    if(!(str = malloc(len1 + len2 + 1))) error(ALOCERR);
+    if(!(str = malloc(len1 + len2 + 1))) exit(12);
 
     while((str[i++] = *str1++));
     --i;
@@ -59,15 +41,21 @@ char *sconcat(char *str1, char *str2)
 int main()
 {
     char *s1, *s2, *s;
-
     puts("Enter two strings:");
-    if(!(s1 = getstr()) || !(s2 = getstr())) error(ALOCERR);
-
+    if(!(s1 = getstr()) || !(s2 = getstr())) exit(12);
     printf("Concatenated string is \"%s\".", s = sconcat(s1, s2));
-
     free(s1);
     free(s2);
     free(s);
     return 0;
 }
 /* end of dynstring.c */
+
+/* OUTPUT
+
+Enter two strings:
+hello
+world
+Concatenated string is "helloworld".
+
+*/

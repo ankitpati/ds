@@ -23,3 +23,21 @@ int main()
     return 0;
 }
 /* end of sizeof.c */
+
+/* OUTPUT
+
++---------------+---------------+
+|   Data Type   | Size in Bytes |
++---------------+---------------+
+|          void |             1 |
+|          char |             1 |
+|           int |             4 |
+|      long int |             8 |
+| long long int |             8 |
+|         float |             4 |
+|        double |             8 |
+|   long double |            16 |
+|      pointers |             8 |
++---------------+---------------+
+
+*/
