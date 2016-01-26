@@ -5,7 +5,23 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+
+typedef enum{
+    ALOCERR
+} errcode;
+
+void error(errcode e)
+{
+    switch(e){
+    case ALOCERR:
+        fprintf(stderr, "Allocation Error!\n");
+        break;
+    default:
+        fprintf(stderr, "Unknown Error!\n");
+        break;
+    }
+    exit(e);
+}
 
 char *getstr()
 {
@@ -22,30 +38,36 @@ char *getstr()
     return s;
 }
 
+char *sconcat(char *str1, char *str2)
+{
+    char *str;
+    size_t len1, len2, i;
+
+    len1 = len2 = i = 0;
+
+    while(str1[len1]) ++len1;
+    while(str2[len2]) ++len2;
+    if(!(str = malloc(len1 + len2 + 1))) error(ALOCERR);
+
+    while((str[i++] = *str1++));
+    --i;
+    while((str[i++] = *str2++));
+
+    return str;
+}
+
 int main()
 {
-    char *s1, *s2, *d;
-    size_t i, j;
+    char *s1, *s2, *s;
 
     puts("Enter two strings:");
-    if(!(s1 = getstr())) goto alocerr;
-    if(!(s2 = getstr())) goto alocerr;
+    if(!(s1 = getstr()) || !(s2 = getstr())) error(ALOCERR);
 
-    if(!(d = malloc(strlen(s1) + strlen(s2) + 1))) goto alocerr;
-
-    i = j = 0;
-    while((d[i] = s1[i])) ++i;
-    while((d[i++] = s2[j++]));
-
-    printf("Concatenated string is \"%s\".", d);
+    printf("Concatenated string is \"%s\".", s = sconcat(s1, s2));
 
     free(s1);
     free(s2);
-    free(d);
+    free(s);
     return 0;
-
-alocerr:
-    fprintf(stderr, "Cannot allocate memory!\n");
-    return 12;
 }
 /* end of dynstring.c */

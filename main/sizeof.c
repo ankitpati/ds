@@ -18,6 +18,7 @@ int main()
     printf("|         float |            %2lu |\n", sizeof(float));
     printf("|        double |            %2lu |\n", sizeof(double));
     printf("|   long double |            %2lu |\n", sizeof(long double));
+    printf("|      pointers |            %2lu |\n", sizeof(char *));
     printf("+---------------+---------------+\n");
     return 0;
 }
