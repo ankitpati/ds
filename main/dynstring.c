@@ -41,9 +41,12 @@ char *sconcat(char *str1, char *str2)
 int main()
 {
     char *s1, *s2, *s;
+
     puts("Enter two strings:");
     if(!(s1 = getstr()) || !(s2 = getstr())) exit(12);
+
     printf("Concatenated string is \"%s\".", s = sconcat(s1, s2));
+
     free(s1);
     free(s2);
     free(s);
