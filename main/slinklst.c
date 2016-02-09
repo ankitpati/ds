@@ -28,17 +28,15 @@ void insert(size_t pos, data d)
     size_t i;
     node prev, newnode;
 
-    if(!first){
-        first = malloc(sizeof(*first));
-        if(!first) exit(12);
-        first->d = d;
-        first->next = NULL;
-        return;
-    }
-
     newnode = malloc(sizeof(*newnode));
     if(!newnode) exit(12);
     newnode->d = d;
+
+    if(!first){
+        newnode->next = NULL;
+        first = newnode;
+        return;
+    }
 
     if(!pos){
         newnode->next = first;
@@ -135,7 +133,7 @@ int main()
                 case 3:
                     puts("Data?");
                     scanf(" %d%*c", &d);
-                    insert(~0u, d);
+                    insert(~(size_t)0, d);
                     break;
                 default:
                     puts("Incorrect Choice!");
@@ -167,7 +165,7 @@ int main()
                     else printf("%d\n", d);
                     break;
                 case 3:
-                    d = delet(~0u);
+                    d = delet(~(size_t)0);
                     if(d == -1) puts("List empty.");
                     else printf("%d\n", d);
                     break;
