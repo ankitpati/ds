@@ -32,17 +32,15 @@ void insert(size_t pos, data d)
     size_t i;
     node prev, newnode;
 
-    if(!first){
-        first = malloc(sizeof(*first));
-        if(!first) exit(12);
-        first->d = d;
-        first->next = first;
-        return;
-    }
-
     newnode = malloc(sizeof(*newnode));
     if(!newnode) exit(12);
     newnode->d = d;
+
+    if(!first){
+        newnode->next = first;
+        first = newnode;
+        return;
+    }
 
     if(!pos){
         for(prev = first; prev->next != first; prev = prev->next);
@@ -109,7 +107,7 @@ size_t search(data key)
     size_t pos;
     node tmp;
 
-    if(!first) return ~0u;
+    if(!first) return ~(size_t)0;
 
     pos = 0;
     tmp = first;
@@ -167,7 +165,7 @@ int main()
                 case 3:
                     puts("Data?");
                     scanf(" %d%*c", &d);
-                    insert(~0u, d);
+                    insert(~(size_t)0, d);
                     break;
                 default:
                     puts("Incorrect Choice!");
@@ -199,7 +197,7 @@ int main()
                     else printf("%d\n", d);
                     break;
                 case 3:
-                    d = delet(~0u);
+                    d = delet(~(size_t)0);
                     if(d == -1) puts("List empty.");
                     else printf("%d\n", d);
                     break;
@@ -213,7 +211,7 @@ int main()
             puts("Key?");
             scanf(" %d%*c", &d);
             pos = search(d);
-            if(pos == ~0u) puts("Not found.");
+            if(pos == ~(size_t)0) puts("Not found.");
             else printf("Found at index %lu.\n", pos);
             break;
         case 4:
