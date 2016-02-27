@@ -203,6 +203,17 @@ int main()
 
 /* OUTPUT
 
+Required Tree:
+       50
+     /    \
+    40    60
+    /      \
+   30      70
+  /  \     / \
+ 25  35   65 80
+ /   / \
+20  33 36
+
 What would you like to do?
 ( 0) Exit
 ( 1) Insert
