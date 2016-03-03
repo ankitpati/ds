@@ -15,7 +15,7 @@ typedef struct Node{
 
 node root = NULL;
 
-/* preorder */
+/* recursive preorder */
 void pre_ord_core(node n)
 {
     if(!n) return;
@@ -28,9 +28,9 @@ void pre_ord()
 {
     pre_ord_core(root);
 }
-/* end of preorder */
+/* end of recursive preorder */
 
-/* inorder */
+/* recursive inorder */
 void in_ord_core(node n)
 {
     if(!n) return;
@@ -43,9 +43,9 @@ void in_ord()
 {
     in_ord_core(root);
 }
-/* end of inorder */
+/* end of recursive inorder */
 
-/* postorder */
+/* recursive postorder */
 void post_ord_core(node n)
 {
     if(!n) return;
@@ -58,7 +58,7 @@ void post_ord()
 {
     post_ord_core(root);
 }
-/* end of postorder */
+/* end of recursive postorder */
 
 /* recursive insert */
 void insert_core(node prev, node c, data d)
@@ -106,9 +106,12 @@ data delet_core(node prev, node c, data d)
         else                     prev->right = temp->left ? temp->left : temp;
 
         if(temp->left){
+            prev = temp->left->right;
+
             temp->left->left  = c->left ;
             temp->left->right = c->right;
-            temp->left = NULL;
+
+            temp->left = prev;
         }
         else temp->left = c->left;
     }
@@ -213,6 +216,8 @@ Required Tree:
  25  35   65 80
  /   / \
 20  33 36
+     \
+     34
 
 What would you like to do?
 ( 0) Exit
@@ -257,18 +262,21 @@ What would you like to do?
 1
 33
 
+1
+34
+
 4
-Preorder : 50 40 30 25 20 35 33 36 60 70 65 80
-Inorder  : 20 25 30 33 35 36 40 50 60 65 70 80
-Postorder: 20 25 33 36 35 30 40 65 80 70 60 50
+Preorder : 50 40 30 25 20 35 33 34 36 60 70 65 80
+Inorder  : 20 25 30 33 34 35 36 40 50 60 65 70 80
+Postorder: 20 25 34 33 36 35 30 40 65 80 70 60 50
 
 2
 30
 
 4
-Preorder : 50 40 33 25 20 35 36 60 70 65 80
-Inorder  : 20 25 33 35 36 40 50 60 65 70 80
-Postorder: 20 25 36 35 33 40 65 80 70 60 50
+Preorder : 50 40 33 25 20 35 34 36 60 70 65 80
+Inorder  : 20 25 33 34 35 36 40 50 60 65 70 80
+Postorder: 20 25 34 36 35 33 40 65 80 70 60 50
 
 3
 33
