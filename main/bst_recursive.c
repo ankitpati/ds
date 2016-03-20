@@ -15,6 +15,31 @@ typedef struct Node{
 
 node root = NULL;
 
+/* count nodes */
+size_t count_core(node n, size_t c)
+{
+    return n ? c + 1 + count_core(n->left, 0) + count_core(n->right, 0) : c;
+}
+
+size_t count()
+{
+    return count_core(root, 0);
+}
+/* end of count nodes */
+
+/* count leaf */
+size_t count_leaf_core(node n, size_t c)
+{
+    return n ? n->left || n->right ? c + count_leaf_core(n->left, 0) +
+                                       count_leaf_core(n->right, 0) : c + 1 : c;
+}
+
+size_t count_leaf()
+{
+    return count_leaf_core(root, 0);
+}
+/* end of count leaf */
+
 /* recursive preorder */
 void pre_ord_core(node n)
 {
@@ -159,6 +184,8 @@ int main()
         puts("( 2) Delete");
         puts("( 3) Find");
         puts("( 4) Traverse");
+        puts("( 5) Count Nodes");
+        puts("( 6) Count Leaves");
 
         scanf(" %d%*c", &ch);
 
@@ -193,6 +220,12 @@ int main()
             printf("Preorder : "); pre_ord (); putchar('\n');
             printf("Inorder  : "); in_ord  (); putchar('\n');
             printf("Postorder: "); post_ord(); putchar('\n');
+            break;
+        case 5:
+            printf("Node Count: %zu\n", count());
+            break;
+        case 6:
+            printf("Leaf Count: %zu\n", count_leaf());
             break;
         default:
             puts("Incorrect Choice!");
@@ -269,6 +302,12 @@ What would you like to do?
 Preorder : 50 40 30 25 20 35 33 34 36 60 70 65 80
 Inorder  : 20 25 30 33 34 35 36 40 50 60 65 70 80
 Postorder: 20 25 34 33 36 35 30 40 65 80 70 60 50
+
+5
+Node Count: 13
+
+6
+Leaf Count: 5
 
 2
 30
