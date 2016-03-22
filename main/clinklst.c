@@ -212,14 +212,14 @@ int main()
             scanf(" %d%*c", &d);
             pos = search(d);
             if(pos == ~(size_t)0) puts("Not found.");
-            else printf("Found at index %lu.\n", pos);
+            else printf("Found at index %zu.\n", pos);
             break;
         case 4:
             traverse(1);
             break;
         case 5:
             puts("Number of Traversals?");
-            scanf(" %lu%*c", &pos);
+            scanf(" %zu%*c", &pos);
             traverse(pos);
             break;
         default:
