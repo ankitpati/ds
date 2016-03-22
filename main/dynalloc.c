@@ -13,7 +13,7 @@ int main()
     int cal;
 
     puts("How many numbers?");
-    scanf(" %lu%*c", &n);
+    scanf(" %zu%*c", &n);
     puts("Which allocation routine?\n(0) malloc\n(1) calloc");
     scanf(" %d%*c", &cal);
     if(!(a = cal ? calloc(n, sizeof(*a)) : malloc(n * sizeof(*a)))){
@@ -21,7 +21,7 @@ int main()
         exit(12);
     }
 
-    printf("Enter %lu numbers:\n", n);
+    printf("Enter %zu numbers:\n", n);
     for(i = 0; i < n; ++i) scanf(" %lf%*c", a + i);
 
     for(i = 1; i < n; ++i) a[0] += a[i];
