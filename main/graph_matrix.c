@@ -89,7 +89,7 @@ int undirected_insert_edge(node from, node to) /* return 0; on failure */
         (directed_insert_edge(from, to) + directed_insert_edge(to, from)) / 2;
 }
 
-int undirected_delet_edge(node from, node to) /* return 0; on failure */
+int undirected_delet_edge(node from, node to) /* return 0; is not failure */
 {
     return from == to ?
         directed_delet_edge(from, to) :
