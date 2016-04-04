@@ -1,12 +1,10 @@
 /* graph_list.c */
-/* Date  : 28 March 2016
+/* Date  : 04 April 2016
  * Author: Ankit Pati
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#define MAX_NODES 20
 
 typedef int data;
 
