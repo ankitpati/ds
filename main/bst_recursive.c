@@ -171,6 +171,34 @@ node find(data d)
 }
 /* end of recursive find */
 
+/* AVL checking code */
+size_t height(node n)
+{
+    return n ? (height(n->left) > height(n->right) ?
+                                    height(n->left) : height(n->right)) + 1 : 0;
+}
+
+int isavl_core(node n)
+{
+    size_t hleft, hright, hdiff;
+
+    if(!n) return 1;
+
+    hleft  = height(n->left );
+    hright = height(n->right);
+    hdiff  = hleft > hright ? hleft - hright : hright - hleft;
+
+    if(hdiff > 1) return 0;
+
+    return isavl_core(n->left) && isavl_core(n->right);
+}
+
+int isavl()
+{
+    return isavl_core(root);
+}
+/* end of AVL checking code */
+
 int main()
 {
     int ch;
@@ -186,6 +214,7 @@ int main()
         puts("( 4) Traverse");
         puts("( 5) Count Nodes");
         puts("( 6) Count Leaves");
+        puts("( 7) Check AVL");
 
         scanf(" %d%*c", &ch);
 
@@ -226,6 +255,9 @@ int main()
             break;
         case 6:
             printf("Leaf Count: %zu\n", count_leaf());
+            break;
+        case 7:
+            printf("Tree is%s AVL.\n", isavl() ? "" : " not");
             break;
         default:
             puts("Incorrect Choice!");
@@ -309,6 +341,9 @@ Node Count: 13
 6
 Leaf Count: 5
 
+7
+Tree is not AVL.
+
 2
 30
 
@@ -320,6 +355,29 @@ Postorder: 20 25 34 36 35 33 40 65 80 70 60 50
 3
 33
 Node: 25 <- 33 -> 35
+
+2
+20
+
+2
+33
+
+2
+36
+
+1
+41
+
+1
+59
+
+4
+Preorder : 50 40 34 25 35 41 60 59 70 65 80
+Inorder  : 25 34 35 40 41 50 59 60 65 70 80
+Postorder: 25 35 34 41 40 59 65 80 70 60 50
+
+7
+Tree is AVL.
 
 0
 
