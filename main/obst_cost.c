@@ -33,7 +33,7 @@ node *inorder(node *f, size_t n)
 
 size_t obst_cost(node *f, size_t maxlen)
 {
-    size_t i, row, col, len, sum, tmpcost, cost[maxlen][maxlen];
+    size_t i, row, col, len, sum, tmpcost, cost[20][20];
 
     inorder(f, maxlen);
 
@@ -63,6 +63,7 @@ int main()
 
     puts("Number of nodes?");
     scanf(" %zu%*c", &n);
+    if(n > 20) n = 20;
 
     f = malloc(sizeof(*f) * n);
     if(!f){
@@ -70,10 +71,10 @@ int main()
         exit(12);
     }
 
-    puts("Nodes?");
+    printf("%zu nodes?\n", n);
     for(i = 0; i < n; ++i) scanf(" %d%*c", &f[i].d);
 
-    puts("Frequencies?");
+    printf("%zu frequencies?\n", n);
     for(i = 0; i < n; ++i) scanf(" %zu%*c", &f[i].freq);
 
     printf("Cost of Optimal BST is %zu.\n", obst_cost(f, n));
