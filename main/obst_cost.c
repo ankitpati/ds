@@ -59,17 +59,11 @@ size_t obst_cost(node *f, size_t maxlen)
 int main()
 {
     size_t i, n;
-    node *f;
+    node f[20];
 
     puts("Number of nodes?");
     scanf(" %zu%*c", &n);
     if(n > 20) n = 20;
-
-    f = malloc(sizeof(*f) * n);
-    if(!f){
-        fprintf(stderr, "Insufficient Memory!\n");
-        exit(12);
-    }
 
     printf("%zu nodes?\n", n);
     for(i = 0; i < n; ++i) scanf(" %d%*c", &f[i].d);
