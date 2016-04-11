@@ -49,7 +49,7 @@ void pre_ord_core(node n)
     pre_ord_core(n->right);
 }
 
-void pre_ord()
+void pre_ord(node root)
 {
     pre_ord_core(root);
 }
@@ -64,7 +64,7 @@ void in_ord_core(node n)
     in_ord_core(n->right);
 }
 
-void in_ord()
+void in_ord(node root)
 {
     in_ord_core(root);
 }
@@ -79,7 +79,7 @@ void post_ord_core(node n)
     printf("%d ", n->d);
 }
 
-void post_ord()
+void post_ord(node root)
 {
     post_ord_core(root);
 }
@@ -171,6 +171,112 @@ node find(data d)
 }
 /* end of recursive find */
 
+/* mirroring code */
+node m_root = NULL;
+
+/* recursive insert */
+void m_insert_core(node prev, node c, data d)
+{
+    if(!c){
+        c = malloc(sizeof(*c));
+        if(!c) exit(12);
+        c->right = c->left = NULL;
+        c->d = d;
+
+             if(!prev      ) m_root        = c;
+        else if(d < prev->d) prev->right = c;
+        else if(d > prev->d) prev->left  = c;
+    }
+    else if(d < c->d) m_insert_core(c, c->right, d);
+    else if(d > c->d) m_insert_core(c, c->left, d);
+}
+
+void m_insert(data d)
+{
+    m_insert_core(NULL, m_root, d);
+}
+/* end of recursive insert */
+
+/* recursive delete */
+node m_min_parent(node c) /* parent of minimum node (inorder successor) */
+{
+    return c->right && c->right->right ? m_min_parent(c->right) : c;
+}
+
+data m_delet_core(node prev, node c, data d)
+{
+    node temp;
+
+    if(!c) return -1;
+
+    else if(d < c->d) return m_delet_core(c, c->right , d);
+    else if(d > c->d) return m_delet_core(c, c->left, d);
+
+    else if(c->left && c->right){
+        temp = m_min_parent(c->left);
+
+             if(c == m_root) m_root = temp->right ? temp->right : temp;
+        else if(prev->right == c)
+            prev->right = temp->right ? temp->right : temp;
+        else prev->left = temp->right ? temp->right : temp;
+
+        if(temp->right){
+            prev = temp->right->left;
+
+            temp->right->right = c->right;
+            temp->right->left  = c->left ;
+
+            temp->right = prev;
+        }
+        else temp->right = c->right;
+    }
+
+    else{
+             if(c == m_root    ) m_root      = c->left ? c->left : c->right;
+        else if(prev->left == c) prev->left  = c->left ? c->left : c->right;
+        else                     prev->right = c->left ? c->left : c->right;
+    }
+
+    d = c->d;
+    free(c);
+    return d;
+}
+
+data m_delet(data d)
+{
+    return m_delet_core(NULL, m_root, d);
+}
+/* end of recursive delete */
+
+/* recursive find */
+node m_find_core(node c, data d)
+{
+    return c ? d < c->d ? m_find_core(c->right, d) : d > c->d ?
+                                             m_find_core(c->left, d) : c : NULL;
+}
+
+node m_find(data d)
+{
+    return m_find_core(m_root, d);
+}
+/* end of recursive find */
+
+/* mirror initialisation */
+void m_init_core(node n)
+{
+    if(!n) return;
+    m_insert(n->d);
+    m_init_core(n->left);
+    m_init_core(n->right);
+}
+
+void m_init()
+{
+    m_init_core(root);
+}
+/* end of mirror initialisation */
+/* end of mirroring code */
+
 /* AVL checking code */
 size_t height(node n)
 {
@@ -205,17 +311,24 @@ int main()
     data d;
     node c;
 
-    do{
-        puts("What would you like to do?");
-        puts("( 0) Exit");
-        puts("( 1) Insert");
-        puts("( 2) Delete");
-        puts("( 3) Find");
-        puts("( 4) Traverse");
-        puts("( 5) Count Nodes");
-        puts("( 6) Count Leaves");
-        puts("( 7) Check AVL");
+    puts("What would you like to do?");
+    puts("( 0) Exit");
+    puts("( 1) Insert");
+    puts("( 2) Delete");
+    puts("( 3) Find");
+    puts("( 4) Traverse");
+    puts("( 5) Count Nodes");
+    puts("( 6) Count Leaves");
+    puts("( 7) Check AVL");
+    puts("( 8) Mirror Tree");
+    puts("( 9) Mirror Insert");
+    puts("(10) Mirror Delete");
+    puts("(11) Mirror Find");
+    puts("(12) Mirror Traverse");
 
+    do{
+        printf("?> ");
+        fflush(stdout);
         scanf(" %d%*c", &ch);
 
         switch(ch){
@@ -246,9 +359,9 @@ int main()
                 printf("Node: NULL <- %d -> NULL\n", c->d);
             break;
         case 4:
-            printf("Preorder : "); pre_ord (); putchar('\n');
-            printf("Inorder  : "); in_ord  (); putchar('\n');
-            printf("Postorder: "); post_ord(); putchar('\n');
+            printf("Preorder : "); pre_ord (root); putchar('\n');
+            printf("Inorder  : "); in_ord  (root); putchar('\n');
+            printf("Postorder: "); post_ord(root); putchar('\n');
             break;
         case 5:
             printf("Node Count: %zu\n", count());
@@ -258,6 +371,38 @@ int main()
             break;
         case 7:
             printf("Tree is%s AVL.\n", isavl() ? "" : " not");
+            break;
+        case 8:
+            m_init();
+            break;
+        case 9:
+            puts("Value?");
+            scanf(" %d%*c", &d);
+            m_insert(d);
+            break;
+        case 10:
+            puts("Value?");
+            scanf(" %d%*c", &d);
+            m_delet(d);
+            break;
+        case 11:
+            puts("Value?");
+            scanf(" %d%*c", &d);
+            c = m_find(d);
+                 if(!c) puts("Node not found.");
+            else if(c->left && c->right)
+                printf("Node: %d <- %d -> %d\n", c->left->d, c->d, c->right->d);
+            else if(c->left)
+                printf("Node: %d <- %d -> NULL\n", c->left->d, c->d);
+            else if(c->right)
+                printf("Node: NULL <- %d -> %d\n", c->d, c->right->d);
+            else
+                printf("Node: NULL <- %d -> NULL\n", c->d);
+            break;
+        case 12:
+            printf("Preorder : "); pre_ord (m_root); putchar('\n');
+            printf("Inorder  : "); in_ord  (m_root); putchar('\n');
+            printf("Postorder: "); post_ord(m_root); putchar('\n');
             break;
         default:
             puts("Incorrect Choice!");
@@ -290,6 +435,14 @@ What would you like to do?
 ( 2) Delete
 ( 3) Find
 ( 4) Traverse
+( 5) Count Nodes
+( 6) Count Leaves
+( 7) Check AVL
+( 8) Mirror Tree
+( 9) Mirror Insert
+(10) Mirror Delete
+(11) Mirror Find
+(12) Mirror Traverse
 
 1
 50

@@ -47,7 +47,7 @@ size_t count_leaf()
     return leaf;
 }
 
-void pre_ord()
+void pre_ord(node root)
 {
     size_t top;
     node c, stack[MAX_NODES];
@@ -60,7 +60,7 @@ void pre_ord()
         }
 }
 
-void in_ord()
+void in_ord(node root)
 {
     size_t top;
     node c, stack[MAX_NODES];
@@ -77,7 +77,7 @@ void in_ord()
         }
 }
 
-void post_ord()
+void post_ord(node root)
 {
     size_t top;
     node c, prev, stack[MAX_NODES];
@@ -182,6 +182,96 @@ node find(data d)
     return c;
 }
 
+/* mirroring code */
+node m_root = NULL;
+
+void m_insert(data d)
+{
+    node c, prev, newnode;
+
+    newnode = malloc(sizeof(*newnode));
+    if(!newnode) exit(12);
+    newnode->d = d;
+    newnode->right = newnode->left = NULL;
+
+    if(!m_root){
+        m_root = newnode;
+        return;
+    }
+
+    for(c = m_root; c; c = (c->d > d ? c->right : c->left)){
+        if(c->d == d){
+            free(newnode);
+            return;
+        }
+        prev = c;
+    }
+
+    if(prev->d > d)
+        prev->right = newnode;
+    else
+        prev->left = newnode;
+}
+
+data m_delet(data d)
+{
+    node del_parent, min_parent, c, m;
+
+    for(
+        c = m_root;
+        c && c->d != d;
+        c = d < c->d ? c->right : c->left
+    ) del_parent = c;
+
+    if(!c) return -1;
+
+    if(!c->left){
+        m = c->right;
+        goto finaldel;
+    }
+
+    for(min_parent = c, m = c->left; m->right; m = m->right) min_parent = m;
+
+    m->right = c->right;
+    min_parent->right = m->left;
+
+    if(c->left != m)
+        m->left = c->left;
+
+finaldel:
+    if(c == m_root)
+        m_root = m;
+    else if(del_parent->right == c)
+        del_parent->right = m;
+    else
+        del_parent->left = m;
+
+    d = c->d;
+    free(c);
+    return d;
+}
+
+node m_find(data d)
+{
+    node c;
+    for(c = m_root; c && c->d != d; c = d < c->d ? c->right : c->left);
+    return c;
+}
+
+void m_init()
+{
+    unsigned top;
+    node c, stack[MAX_NODES];
+
+    for(top = 0, c = root; top || c; c = stack[--top])
+        if(c){
+            m_insert(c->d);
+            stack[top++] = c->right;
+            stack[top++] = c->left ;
+        }
+}
+/* end of mirroring code */
+
 /* AVL checking code */
 size_t height(node root)
 {
@@ -233,17 +323,24 @@ int main()
     data d;
     node c;
 
-    do{
-        puts("What would you like to do?");
-        puts("( 0) Exit");
-        puts("( 1) Insert");
-        puts("( 2) Delete");
-        puts("( 3) Find");
-        puts("( 4) Traverse");
-        puts("( 5) Count Nodes");
-        puts("( 6) Count Leaves");
-        puts("( 7) Check AVL");
+    puts("What would you like to do?");
+    puts("( 0) Exit");
+    puts("( 1) Insert");
+    puts("( 2) Delete");
+    puts("( 3) Find");
+    puts("( 4) Traverse");
+    puts("( 5) Count Nodes");
+    puts("( 6) Count Leaves");
+    puts("( 7) Check AVL");
+    puts("( 8) Mirror Tree");
+    puts("( 9) Mirror Insert");
+    puts("(10) Mirror Delete");
+    puts("(11) Mirror Find");
+    puts("(12) Mirror Traverse");
 
+    do{
+        printf("?> ");
+        fflush(stdout);
         scanf(" %d%*c", &ch);
 
         switch(ch){
@@ -274,9 +371,9 @@ int main()
                 printf("Node: NULL <- %d -> NULL\n", c->d);
             break;
         case 4:
-            printf("Preorder : "); pre_ord (); putchar('\n');
-            printf("Inorder  : "); in_ord  (); putchar('\n');
-            printf("Postorder: "); post_ord(); putchar('\n');
+            printf("Preorder : "); pre_ord (root); putchar('\n');
+            printf("Inorder  : "); in_ord  (root); putchar('\n');
+            printf("Postorder: "); post_ord(root); putchar('\n');
             break;
         case 5:
             printf("Node Count: %zu\n", count());
@@ -286,6 +383,38 @@ int main()
             break;
         case 7:
             printf("Tree is%s AVL.\n", isavl() ? "" : " not");
+            break;
+        case 8:
+            m_init();
+            break;
+        case 9:
+            puts("Value?");
+            scanf(" %d%*c", &d);
+            m_insert(d);
+            break;
+        case 10:
+            puts("Value?");
+            scanf(" %d%*c", &d);
+            m_delet(d);
+            break;
+        case 11:
+            puts("Value?");
+            scanf(" %d%*c", &d);
+            c = m_find(d);
+                 if(!c) puts("Node not found.");
+            else if(c->left && c->right)
+                printf("Node: %d <- %d -> %d\n", c->left->d, c->d, c->right->d);
+            else if(c->left)
+                printf("Node: %d <- %d -> NULL\n", c->left->d, c->d);
+            else if(c->right)
+                printf("Node: NULL <- %d -> %d\n", c->d, c->right->d);
+            else
+                printf("Node: NULL <- %d -> NULL\n", c->d);
+            break;
+        case 12:
+            printf("Preorder : "); pre_ord (m_root); putchar('\n');
+            printf("Inorder  : "); in_ord  (m_root); putchar('\n');
+            printf("Postorder: "); post_ord(m_root); putchar('\n');
             break;
         default:
             puts("Incorrect Choice!");
@@ -318,6 +447,14 @@ What would you like to do?
 ( 2) Delete
 ( 3) Find
 ( 4) Traverse
+( 5) Count Nodes
+( 6) Count Leaves
+( 7) Check AVL
+( 8) Mirror Tree
+( 9) Mirror Insert
+(10) Mirror Delete
+(11) Mirror Find
+(12) Mirror Traverse
 
 1
 50
