@@ -34,6 +34,63 @@ size_t find(node d) /* return 0; on failure */
     return 0;
 }
 
+void bfs(node from)
+{
+    size_t i, j, front, rear, vtop;
+    node c, queue[MAX_NODES], visited[MAX_NODES];
+
+    if(!g.count) return;
+
+    front = rear = vtop = 0;
+    queue[rear++] = g.adjmat[0][find(from)];
+
+    while(front != rear){
+        c = queue[front++];
+        printf("%d ", c);
+        visited[vtop++] = c;
+
+        for(i = 1; i <= g.count; ++i){
+            if(!g.adjmat[find(c)][i]) continue;
+            for(j = 0; j < vtop && g.adjmat[0][i] != visited[j]; ++j);
+            if(j == vtop){
+                for(j = front; j < rear && g.adjmat[0][i] != queue[j]; ++j);
+                if(j == rear) queue[rear++] = g.adjmat[0][i];
+            }
+        }
+    }
+
+    putchar('\n');
+}
+
+void dfs(node from)
+{
+    size_t i, j, top, vtop;
+    node c, stack[MAX_NODES], visited[MAX_NODES * MAX_NODES];
+
+    if(!g.count) return;
+
+    top = vtop = 0;
+    stack[top++] = g.adjmat[0][find(from)];
+
+    while(top){
+        c = stack[--top];
+        for(j = 0; j < vtop && c != visited[j]; ++j);
+        if(j == vtop){
+            printf("%d ", c);
+            visited[vtop++] = c;
+        }
+        else continue;
+
+        for(i = g.count; i; --i){
+            if(!g.adjmat[find(c)][i]) continue;
+            for(j = 0; j < vtop && g.adjmat[0][i] != visited[j]; ++j);
+            if(j == vtop) stack[top++] = g.adjmat[0][i];
+        }
+    }
+
+    putchar('\n');
+}
+
 size_t insert(node d) /* return 0; on failure */
 {
     size_t f;
@@ -127,17 +184,21 @@ int main()
 
     init();
 
-    do{
-        puts("What would you like to do?");
-        puts("( 0) Exit");
-        puts("( 1) Insert");
-        puts("( 2) Delete");
-        puts("( 3) Directed Insert Edge");
-        puts("( 4) Directed Delete Edge");
-        puts("( 5) Undirected Insert Edge");
-        puts("( 6) Undirected Delete Edge");
-        puts("( 7) Display");
+    puts("What would you like to do?");
+    puts("( 0) Exit");
+    puts("( 1) Insert");
+    puts("( 2) Delete");
+    puts("( 3) Directed Insert Edge");
+    puts("( 4) Directed Delete Edge");
+    puts("( 5) Undirected Insert Edge");
+    puts("( 6) Undirected Delete Edge");
+    puts("( 7) Breadth First Search");
+    puts("( 8) Breadth First Search");
+    puts("( 9) Display");
 
+    do{
+        printf("?> ");
+        fflush(stdout);
         scanf(" %d%*c", &ch);
 
         switch(ch){
@@ -190,6 +251,16 @@ int main()
             undirected_delet_edge(f, t);
             break;
         case 7:
+            puts("From?");
+            scanf(" %d%*c", &f);
+            bfs(f);
+            break;
+        case 8:
+            puts("From?");
+            scanf(" %d%*c", &f);
+            dfs(f);
+            break;
+        case 9:
             display();
             break;
         default:
@@ -203,7 +274,6 @@ int main()
 /* end of graph_matrix.c */
 
 /* OUTPUT
-
 What would you like to do?
 ( 0) Exit
 ( 1) Insert
@@ -212,55 +282,137 @@ What would you like to do?
 ( 4) Directed Delete Edge
 ( 5) Undirected Insert Edge
 ( 6) Undirected Delete Edge
-( 7) Display
+( 7) Breadth First Search
+( 8) Breadth First Search
+( 9) Display
 
 1
-43
+Node?
+1
+
+1
+2
+
+1
+3
+
+1
+4
+
+1
+5
+
+1
+6
+
+1
+7
+
+1
+8
+
+1
+9
 
 1
 50
 
-1
-64
-
-1
-55
+9
+ x  |   1   2   3   4   5   6   7   8   9  50
+----+-----------------------------------------
+  1 |   0   0   0   0   0   0   0   0   0   0
+  2 |   0   0   0   0   0   0   0   0   0   0
+  3 |   0   0   0   0   0   0   0   0   0   0
+  4 |   0   0   0   0   0   0   0   0   0   0
+  5 |   0   0   0   0   0   0   0   0   0   0
+  6 |   0   0   0   0   0   0   0   0   0   0
+  7 |   0   0   0   0   0   0   0   0   0   0
+  8 |   0   0   0   0   0   0   0   0   0   0
+  9 |   0   0   0   0   0   0   0   0   0   0
+ 50 |   0   0   0   0   0   0   0   0   0   0
 
 2
+Node?
 50
 
-7
- x  |  43  64  55
-----+-------------
- 43 |   0   0   0
- 64 |   0   0   0
- 55 |   0   0   0
+3
+From?
+1
+To?
+2
 
+3
+1
+4
+
+3
+1
 5
-From?
-43
-To?
-55
 
-7
- x  |  43  64  55
-----+-------------
- 43 |   0   0   1
- 64 |   0   0   0
- 55 |   1   0   0
+3
+2
+3
 
+3
+2
+5
+
+3
+3
 6
-From?
-43
-To?
-55
+
+3
+4
+7
+
+3
+5
+6
+
+3
+7
+5
+
+3
+7
+8
+
+3
+8
+9
+
+3
+8
+10
+
+3
+10
+11
+
+9
+ x  |   1   2   3   4   5   6   7   8   9  10  11
+----+---------------------------------------------
+  1 |   0   1   0   1   1   0   0   0   0   0   0
+  2 |   0   0   1   0   1   0   0   0   0   0   0
+  3 |   0   0   0   0   0   1   0   0   0   0   0
+  4 |   0   0   0   0   0   0   1   0   0   0   0
+  5 |   0   0   0   0   0   1   0   0   0   0   0
+  6 |   0   0   0   0   0   0   0   0   0   0   0
+  7 |   0   0   0   0   1   0   0   1   0   0   0
+  8 |   0   0   0   0   0   0   0   0   1   1   0
+  9 |   0   0   0   0   0   0   0   0   0   0   0
+ 10 |   0   0   0   0   0   0   0   0   0   0   1
+ 11 |   0   0   0   0   0   0   0   0   0   0   0
 
 7
- x  |  43  64  55
-----+-------------
- 43 |   0   0   0
- 64 |   0   0   0
- 55 |   0   0   0
+From?
+1
+1 2 4 5 3 7 6 8 9 10 11
+
+8
+From?
+1
+1 2 3 6 5 4 7 8 9 10 11
 
 0
 
