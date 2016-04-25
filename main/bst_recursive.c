@@ -284,24 +284,24 @@ size_t height(node n)
                                     height(n->left) : height(n->right)) + 1 : 0;
 }
 
-int isavl_core(node n)
+node checkavl_core(node n)
 {
-    size_t hleft, hright, hdiff;
+    if(!n) return NULL;
 
-    if(!n) return 1;
+    if(checkavl_core(n->left) || checkavl_core(n->right))
+        return checkavl_core(n->left) ?
+                               checkavl_core(n->left) : checkavl_core(n->right);
 
-    hleft  = height(n->left );
-    hright = height(n->right);
-    hdiff  = hleft > hright ? hleft - hright : hright - hleft;
+    if(1 < (height(n->left) > height(n->right) ?
+        height(n->left) - height(n->right) : height(n->right) - height(n->left))
+    ) return n;
 
-    if(hdiff > 1) return 0;
-
-    return isavl_core(n->left) && isavl_core(n->right);
+    return NULL;
 }
 
-int isavl()
+node checkavl() /* return NULL; if AVL */
 {
-    return isavl_core(root);
+    return checkavl_core(root);
 }
 /* end of AVL checking code */
 
@@ -370,7 +370,7 @@ int main()
             printf("Leaf Count: %zu\n", count_leaf());
             break;
         case 7:
-            printf("Tree is%s AVL.\n", isavl() ? "" : " not");
+            printf("Tree is%s AVL.\n", checkavl() ? " not" : "");
             break;
         case 8:
             m_init();
