@@ -141,11 +141,8 @@ data delet(data d)
 {
     node del_parent, min_parent, c, m;
 
-    for(
-        c = root;
-        c && c->d != d;
-        c = d < c->d ? c->left : c->right
-    ) del_parent = c;
+    for(c = root; c && c->d != d; c = d < c->d ? c->left : c->right)
+        del_parent = c;
 
     if(!c) return -1;
 
@@ -272,7 +269,7 @@ void m_init()
 }
 /* end of mirroring code */
 
-/* AVL checking code */
+/* AVL code */
 size_t height(node root)
 {
     size_t i, front, rear, ht;
@@ -296,26 +293,112 @@ size_t height(node root)
     return 0;
 }
 
-int isavl()
+node checkavl() /* return NULL; if AVL */
 {
-    size_t top, hleft, hright, hdiff;
-    node c, stack[MAX_NODES];
+    size_t top;
+    node c, prev, stack[MAX_NODES];
 
-    for(top = 0, c = root; top || c; c = stack[--top])
-        if(c){
-            hleft  = height(c->left );
-            hright = height(c->right);
-            hdiff  = hleft > hright ? hleft - hright : hright - hleft;
+    if(!root) return NULL;
 
-            if(hdiff > 1) return 0;
+    top = 0;
+    stack[top++] = root;
+    prev = NULL;
 
-            stack[top++] = c->right;
-            stack[top++] = c->left ;
+    while(top){
+        c = stack[top - 1];
+
+        if(!prev || prev->left == c || prev->right == c){
+                 if(c->left ) stack[top++] = c->left ;
+            else if(c->right) stack[top++] = c->right;
         }
 
-    return 1;
+        else if(c->left == prev){
+            if(c->right) stack[top++] = c->right;
+        }
+
+        else{
+            if(1 < (height(c->left) > height(c->right) ?
+                height(c->left ) - height(c->right) :
+                height(c->right) - height(c->left ) )
+            ) return c;
+
+            --top;
+        }
+
+        prev = c;
+    }
+
+    return NULL;
 }
-/* end of AVL checking code */
+
+void rr(node parent, node c)
+{
+    node child, tmp;
+    child = c->right;
+    if(c == root) root = child;
+    else if(parent->left  == c)
+        parent->left  = child;
+    else
+        parent->right = child;
+    tmp = child->left;
+    child->left = c;
+    c->right = tmp;
+}
+
+void ll(node parent, node c)
+{
+    node child, tmp;
+    child = c->left;
+    if(c == root) root = child;
+    else if(parent->left  == c)
+        parent->left  = child;
+    else
+        parent->right = child;
+    tmp = child->right;
+    child->right = c;
+    c->left = tmp;
+}
+
+void avl_insert(data d)
+{
+    node c, i, parent;
+
+    insert(d);
+    if(!(c = checkavl())) return;
+
+    for(i = root; i != c; i = d < i->d ? i->left : i->right) parent = i;
+
+    if(height(c->left) > height(c->right)){
+        if(c->left->right && c->left->right->d == d) rr(c, c->left);
+        ll(parent, c);
+    }
+    else{
+        if(c->right->left && c->right->left->d == d) ll(c, c->right);
+        rr(parent, c);
+    }
+}
+
+data avl_delet(data d)
+{
+    node c, i, parent;
+
+    d = delet(d);
+    if(!(c = checkavl())) return d;
+
+    for(i = root; i != c; i = d < i->d ? i->left : i->right) parent = i;
+
+    if(height(c->left) > height(c->right)){
+        if(c->left->right && c->left->right->d == d) rr(c, c->left);
+        ll(parent, c);
+    }
+    else{
+        if(c->right->left && c->right->left->d == d) ll(c, c->right);
+        rr(parent, c);
+    }
+
+    return d;
+}
+/* end of AVL code */
 
 int main()
 {
@@ -332,11 +415,13 @@ int main()
     puts("( 5) Count Nodes");
     puts("( 6) Count Leaves");
     puts("( 7) Check AVL");
-    puts("( 8) Mirror Tree");
-    puts("( 9) Mirror Insert");
-    puts("(10) Mirror Delete");
-    puts("(11) Mirror Find");
-    puts("(12) Mirror Traverse");
+    puts("( 8) AVL Insert");
+    puts("( 9) AVL Delete");
+    puts("(10) Mirror Tree");
+    puts("(11) Mirror Insert");
+    puts("(12) Mirror Delete");
+    puts("(13) Mirror Find");
+    puts("(14) Mirror Traverse");
 
     do{
         printf("?> ");
@@ -382,22 +467,32 @@ int main()
             printf("Leaf Count: %zu\n", count_leaf());
             break;
         case 7:
-            printf("Tree is%s AVL.\n", isavl() ? "" : " not");
+            printf("Tree is%s AVL.\n", checkavl() ? " not" : "");
             break;
         case 8:
-            m_init();
+            puts("Value?");
+            scanf(" %d%*c", &d);
+            avl_insert(d);
             break;
         case 9:
             puts("Value?");
             scanf(" %d%*c", &d);
-            m_insert(d);
+            avl_delet(d);
             break;
         case 10:
+            m_init();
+            break;
+        case 11:
+            puts("Value?");
+            scanf(" %d%*c", &d);
+            m_insert(d);
+            break;
+        case 12:
             puts("Value?");
             scanf(" %d%*c", &d);
             m_delet(d);
             break;
-        case 11:
+        case 13:
             puts("Value?");
             scanf(" %d%*c", &d);
             c = m_find(d);
@@ -411,7 +506,7 @@ int main()
             else
                 printf("Node: NULL <- %d -> NULL\n", c->d);
             break;
-        case 12:
+        case 14:
             printf("Preorder : "); pre_ord (m_root); putchar('\n');
             printf("Inorder  : "); in_ord  (m_root); putchar('\n');
             printf("Postorder: "); post_ord(m_root); putchar('\n');
