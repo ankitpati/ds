@@ -16,27 +16,27 @@ typedef struct Node{
 node root = NULL;
 
 /* count nodes */
-size_t count_core(node n, size_t c)
+size_t count_core(node n)
 {
-    return n ? c + 1 + count_core(n->left, 0) + count_core(n->right, 0) : c;
+    return n ? count_core(n->left) + count_core(n->right) + 1 : 0;
 }
 
 size_t count()
 {
-    return count_core(root, 0);
+    return count_core(root);
 }
 /* end of count nodes */
 
 /* count leaf */
-size_t count_leaf_core(node n, size_t c)
+size_t count_leaf_core(node n)
 {
-    return n ? n->left || n->right ? c + count_leaf_core(n->left, 0) +
-                                       count_leaf_core(n->right, 0) : c + 1 : c;
+    return n ? n->left || n->right ? count_leaf_core(n->left) +
+                                              count_leaf_core(n->right) : 1 : 0;
 }
 
 size_t count_leaf()
 {
-    return count_leaf_core(root, 0);
+    return count_leaf_core(root);
 }
 /* end of count leaf */
 
