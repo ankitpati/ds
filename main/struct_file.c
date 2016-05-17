@@ -13,7 +13,7 @@ typedef struct{
 
 int main()
 {
-    unsigned i, n;
+    size_t i, n;
     s stht[50];
     FILE *fp;
 
@@ -23,10 +23,10 @@ int main()
     }
 
     printf("Number of Students? ");
-    scanf(" %u%*c", &n);
+    scanf(" %zu%*c", &n);
 
     for(i = 0; i < n; ++i){
-        printf("\nStudent %u\n", i + 1);
+        printf("\nStudent %zu\n", i + 1);
         printf("Name   : "); fgets(stht[i].name, 50, stdin);
         printf("Height : "); scanf(" %u%*c", &stht[i].height);
     }
@@ -42,7 +42,7 @@ int main()
     fread(stht, sizeof(*stht), n, fp);
 
     for(i = 0; i < n; ++i){
-        printf("\nStudent %u\n", i + 1);
+        printf("\nStudent %zu\n", i + 1);
         printf("Name   : %s", stht[i].name);
         printf("Height : %u", stht[i].height);
         putchar('\n');
