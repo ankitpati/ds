@@ -29,6 +29,7 @@ int main()
         fprintf(fout, "%s%u\n", name, mark);
     }
 
+    fclose(fout);
     return 0;
 }
 /* end of store.c */

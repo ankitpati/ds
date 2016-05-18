@@ -48,6 +48,7 @@ int main()
         putchar('\n');
     }
 
+    fclose(fp);
     return 0;
 }
 /* end of struct_file.c */
