@@ -17,7 +17,7 @@ int main()
     s stht[50];
     FILE *fp;
 
-    if(!(fp = fopen("stheight.txt", "wb+"))){
+    if(!(fp = fopen("stheight.dat", "wb+"))){
         fprintf(stderr, "File could not be opened!\n");
         exit(5);
     }
@@ -34,8 +34,8 @@ int main()
 
     puts("Writing to file...");
     fwrite(stht, sizeof(*stht), n, fp);
-    fflush(fp);
 
+    fflush(fp);
     rewind(fp);
 
     puts("Reading from file...");
