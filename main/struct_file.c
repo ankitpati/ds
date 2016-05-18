@@ -11,13 +11,18 @@ typedef struct{
     unsigned height;
 } s;
 
-int main()
+int main(int argc, char **argv)
 {
     size_t i, n;
     s stht[50];
     FILE *fp;
 
-    if(!(fp = fopen("stheight.dat", "wb+"))){
+    if(argc < 2){
+        fprintf(stderr, "Usage:\n\tstruct_file <filename>");
+        exit(1);
+    }
+
+    if(!(fp = fopen(argv[1], "wb+"))){
         fprintf(stderr, "File could not be opened!\n");
         exit(5);
     }
