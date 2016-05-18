@@ -23,6 +23,24 @@ void traverse()
     putchar('\n');
 }
 
+void invert()
+{
+    node c, prev, temp;
+
+    if(!first) return;
+
+    c = first->next;
+    first->next = NULL;
+
+    for(prev = first; c; c = temp){
+        temp = c->next;
+        c->next = prev;
+        prev = c;
+    }
+
+    first = prev;
+}
+
 void insert(size_t pos, data d)
 {
     size_t i;
@@ -102,6 +120,7 @@ int main()
         puts(" ( 1) Insert");
         puts(" ( 2) Delete");
         puts(" ( 3) Traverse");
+        puts(" ( 4) Invert");
         scanf(" %u%*c", &ch1);
         switch(ch1){
         case 0:
@@ -178,6 +197,9 @@ int main()
         case 3:
             traverse();
             break;
+        case 4:
+            invert();
+            break;
         default:
             puts("Incorrect Choice!");
             break;
@@ -195,6 +217,7 @@ What would you like to do?
  ( 1) Insert
  ( 2) Delete
  ( 3) Traverse
+ ( 4) Invert
 
     1
     Insert where?
@@ -234,8 +257,10 @@ What would you like to do?
 
     0
 
+4
+
 3
-43 86
+86 43
 
 0
 Bye!
