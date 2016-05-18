@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     s stht[50];
     FILE *fp;
 
-    if(argc < 2){
+    if(argc != 2){
         fprintf(stderr, "Usage:\n\tstruct_file <filename>");
         exit(1);
     }
