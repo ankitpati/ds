@@ -114,11 +114,11 @@ node min_parent(node c) /* parent of minimum node (inorder successor) */
     return c->left && c->left->left ? min_parent(c->left) : c;
 }
 
-data delet_core(node prev, node c, data d)
+void delet_core(node prev, node c, data d)
 {
     node temp;
 
-    if(!c) return -1;
+    if(!c) return;
 
     else if(d < c->d) return delet_core(c, c->left , d);
     else if(d > c->d) return delet_core(c, c->right, d);
@@ -147,14 +147,12 @@ data delet_core(node prev, node c, data d)
         else                      prev->left  = c->right ? c->right : c->left;
     }
 
-    d = c->d;
     free(c);
-    return d;
 }
 
-data delet(data d)
+void delet(data d)
 {
-    return delet_core(NULL, root, d);
+    delet_core(NULL, root, d);
 }
 /* end of recursive delete */
 
@@ -203,11 +201,11 @@ node m_min_parent(node c) /* parent of minimum node (inorder successor) */
     return c->right && c->right->right ? m_min_parent(c->right) : c;
 }
 
-data m_delet_core(node prev, node c, data d)
+void m_delet_core(node prev, node c, data d)
 {
     node temp;
 
-    if(!c) return -1;
+    if(!c) return;
 
     else if(d < c->d) return m_delet_core(c, c->right , d);
     else if(d > c->d) return m_delet_core(c, c->left, d);
@@ -237,14 +235,12 @@ data m_delet_core(node prev, node c, data d)
         else                     prev->right = c->left ? c->left : c->right;
     }
 
-    d = c->d;
     free(c);
-    return d;
 }
 
-data m_delet(data d)
+void m_delet(data d)
 {
-    return m_delet_core(NULL, m_root, d);
+    m_delet_core(NULL, m_root, d);
 }
 /* end of recursive delete */
 

@@ -137,29 +137,25 @@ void insert(data d)
         prev->right = newnode;
 }
 
-data delet(data d)
+void delet(data d)
 {
     node del_parent, min_parent, c, m;
 
     for(c = root; c && c->d != d; c = d < c->d ? c->left : c->right)
         del_parent = c;
 
-    if(!c) return -1;
+    if(!c) return;
 
-    if(!c->right){
-        m = c->left;
-        goto finaldel;
+    if(!c->right) m = c->left;
+    else{
+        for(min_parent = c, m = c->right; m->left; m = m->left) min_parent = m;
+
+        m->left = c->left;
+        min_parent->left = m->right;
+
+        if(c->right != m) m->right = c->right;
     }
 
-    for(min_parent = c, m = c->right; m->left; m = m->left) min_parent = m;
-
-    m->left = c->left;
-    min_parent->left = m->right;
-
-    if(c->right != m)
-        m->right = c->right;
-
-finaldel:
     if(c == root)
         root = m;
     else if(del_parent->left == c)
@@ -167,9 +163,7 @@ finaldel:
     else
         del_parent->right = m;
 
-    d = c->d;
     free(c);
-    return d;
 }
 
 node find(data d)
@@ -210,32 +204,26 @@ void m_insert(data d)
         prev->left = newnode;
 }
 
-data m_delet(data d)
+void m_delet(data d)
 {
     node del_parent, min_parent, c, m;
 
-    for(
-        c = m_root;
-        c && c->d != d;
-        c = d < c->d ? c->right : c->left
-    ) del_parent = c;
+    for(c = m_root; c && c->d != d; c = d < c->d ? c->right : c->left)
+        del_parent = c;
 
-    if(!c) return -1;
+    if(!c) return;
 
-    if(!c->left){
-        m = c->right;
-        goto finaldel;
+    if(!c->left) m = c->right;
+    else{
+        for(min_parent = c, m = c->left; m->right; m = m->right) min_parent = m;
+
+        m->right = c->right;
+        min_parent->right = m->left;
+
+        if(c->left != m)
+            m->left = c->left;
     }
 
-    for(min_parent = c, m = c->left; m->right; m = m->right) min_parent = m;
-
-    m->right = c->right;
-    min_parent->right = m->left;
-
-    if(c->left != m)
-        m->left = c->left;
-
-finaldel:
     if(c == m_root)
         m_root = m;
     else if(del_parent->right == c)
@@ -243,9 +231,7 @@ finaldel:
     else
         del_parent->left = m;
 
-    d = c->d;
     free(c);
-    return d;
 }
 
 node m_find(data d)
@@ -377,27 +363,6 @@ void avl_insert(data d)
         rr(parent, c);
     }
 }
-
-data avl_delet(data d)
-{
-    node c, i, parent;
-
-    d = delet(d);
-    if(!(c = checkavl())) return d;
-
-    for(i = root; i != c; i = d < i->d ? i->left : i->right) parent = i;
-
-    if(height(c->left) > height(c->right)){
-        if(c->left->right && c->left->right->d == d) rr(c, c->left);
-        ll(parent, c);
-    }
-    else{
-        if(c->right->left && c->right->left->d == d) ll(c, c->right);
-        rr(parent, c);
-    }
-
-    return d;
-}
 /* end of AVL code */
 
 int main()
@@ -416,12 +381,11 @@ int main()
     puts("( 6) Count Leaves");
     puts("( 7) Check AVL");
     puts("( 8) AVL Insert");
-    puts("( 9) AVL Delete");
-    puts("(10) Mirror Tree");
-    puts("(11) Mirror Insert");
-    puts("(12) Mirror Delete");
-    puts("(13) Mirror Find");
-    puts("(14) Mirror Traverse");
+    puts("( 9) Mirror Tree");
+    puts("(10) Mirror Insert");
+    puts("(11) Mirror Delete");
+    puts("(12) Mirror Find");
+    puts("(13) Mirror Traverse");
 
     do{
         printf("?> ");
@@ -475,24 +439,19 @@ int main()
             avl_insert(d);
             break;
         case 9:
-            puts("Value?");
-            scanf(" %d%*c", &d);
-            avl_delet(d);
-            break;
-        case 10:
             m_init();
             break;
-        case 11:
+        case 10:
             puts("Value?");
             scanf(" %d%*c", &d);
             m_insert(d);
             break;
-        case 12:
+        case 11:
             puts("Value?");
             scanf(" %d%*c", &d);
             m_delet(d);
             break;
-        case 13:
+        case 12:
             puts("Value?");
             scanf(" %d%*c", &d);
             c = m_find(d);
@@ -506,7 +465,7 @@ int main()
             else
                 printf("Node: NULL <- %d -> NULL\n", c->d);
             break;
-        case 14:
+        case 13:
             printf("Preorder : "); pre_ord (m_root); putchar('\n');
             printf("Inorder  : "); in_ord  (m_root); putchar('\n');
             printf("Postorder: "); post_ord(m_root); putchar('\n');
@@ -545,11 +504,12 @@ What would you like to do?
 ( 5) Count Nodes
 ( 6) Count Leaves
 ( 7) Check AVL
-( 8) Mirror Tree
-( 9) Mirror Insert
-(10) Mirror Delete
-(11) Mirror Find
-(12) Mirror Traverse
+( 8) AVL Insert
+( 9) Mirror Tree
+(10) Mirror Insert
+(11) Mirror Delete
+(12) Mirror Find
+(13) Mirror Traverse
 
 1
 50
