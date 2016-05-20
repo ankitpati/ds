@@ -42,7 +42,7 @@ void bfs(node from)
     if(!g.count) return;
 
     front = rear = vtop = 0;
-    queue[rear++] = g.adjmat[0][find(from)];
+    queue[rear++] = find(from);
 
     while(front != rear){
         c = queue[front++];
@@ -51,11 +51,12 @@ void bfs(node from)
 
         for(i = 1; i <= g.count; ++i){
             if(!g.adjmat[find(c)][i]) continue;
+
             for(j = 0; j < vtop && g.adjmat[0][i] != visited[j]; ++j);
-            if(j == vtop){
-                for(j = front; j < rear && g.adjmat[0][i] != queue[j]; ++j);
-                if(j == rear) queue[rear++] = g.adjmat[0][i];
-            }
+            if(j != vtop) continue;
+
+            for(j = front; j < rear && g.adjmat[0][i] != queue[j]; ++j);
+            if(j == rear) queue[rear++] = g.adjmat[0][i];
         }
     }
 
@@ -65,21 +66,21 @@ void bfs(node from)
 void dfs(node from)
 {
     size_t i, j, top, vtop;
-    node c, stack[MAX_NODES], visited[MAX_NODES * MAX_NODES];
+    node c, stack[MAX_NODES * MAX_NODES], visited[MAX_NODES];
 
     if(!g.count) return;
 
     top = vtop = 0;
-    stack[top++] = g.adjmat[0][find(from)];
+    stack[top++] = find(from);
 
     while(top){
         c = stack[--top];
+
         for(j = 0; j < vtop && c != visited[j]; ++j);
-        if(j == vtop){
-            printf("%d ", c);
-            visited[vtop++] = c;
-        }
-        else continue;
+        if(j != vtop) continue;
+
+        printf("%d ", c);
+        visited[vtop++] = c;
 
         for(i = g.count; i; --i){
             if(!g.adjmat[find(c)][i]) continue;
@@ -112,10 +113,12 @@ void delet(node d)
     if(!(f = find(d))) return;
 
     for(i = 0; i <= g.count; ++i)
-        for(j = f; j < g.count; ++j){
+        for(j = f; j < g.count; ++j)
             g.adjmat[i][j] = g.adjmat[i][j + 1];
+
+    for(i = 0; i <= g.count; ++i)
+        for(j = f; j < g.count; ++j)
             g.adjmat[j][i] = g.adjmat[j + 1][i];
-        }
 
     for(i = 0; i <= g.count; ++i){
         g.adjmat[i][g.count] = 0;
