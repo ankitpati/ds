@@ -112,6 +112,7 @@ void delet(node d)
 
     if(!(f = find(d))) return;
 
+    /* do not merge the following for loops */
     for(i = 0; i <= g.count; ++i)
         for(j = f; j < g.count; ++j)
             g.adjmat[i][j] = g.adjmat[i][j + 1];
