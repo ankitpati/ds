@@ -197,7 +197,7 @@ int main()
     puts("( 5) Undirected Insert Edge");
     puts("( 6) Undirected Delete Edge");
     puts("( 7) Breadth First Search");
-    puts("( 8) Breadth First Search");
+    puts("( 8) Depth First Search");
     puts("( 9) Display");
 
     do{
